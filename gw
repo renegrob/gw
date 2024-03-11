@@ -1,17 +1,22 @@
 #!/bin/bash
 relative_path='.'
+found=false
 while [[ $(realpath $relative_path) != '/' ]]; do
-  #echo $(realpath $relative_path)
   if [[ -f "${relative_path}/gradlew" ]]; then
     #echo "Found gradlew at ${relative_path}"
+    # Found gradlew, execute it.
     ${relative_path}/gradlew "$@"
+	found=true
     break
   fi
+  # Check for Gradle settings files.
   if [[ -f "${relative_path}/settings.gradle" || -f "${relative_path}/settings.kts" || -f "${relative_path}/settings.gradle.kts" ]]; then
+    # Found a Gradle settings file, stop searching.
     break
   fi
+  # Move up one directory.
   relative_path="${relative_path}/.."
 done
-if [[ $(realpath $relative_path) = '/' ]]; then
-  echo "gradlew not found"
+if [[ "$found" = false ]]; then
+  >&2 echo "gradlew not found!"
 fi
