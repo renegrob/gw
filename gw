@@ -5,8 +5,9 @@ while [[ $(realpath $relative_path) != '/' ]]; do
   if [[ -f "${relative_path}/gradlew" ]]; then
     #echo "Found gradlew at ${relative_path}"
     # Found gradlew, execute it.
+    set -e
     ${relative_path}/gradlew "$@"
-	found=true
+        found=true
     break
   fi
   # Check for Gradle settings files.
